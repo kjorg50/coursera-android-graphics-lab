@@ -182,7 +182,7 @@ public class BubbleActivity extends Activity {
 					log("*** onSingleTapConfirmed added a new bubble at " + eventX + ", " + eventY);
 				}				
 				
-				// return true always because action has been consumed... I think?
+				// always return true because action has been consumed... that makes sense, right?
 				return true;
 			}
 		});
@@ -256,7 +256,7 @@ public class BubbleActivity extends Activity {
 			if (speedMode == RANDOM) {
 				
 				// TODO - set rotation in range [1..3]
-				mDRotate = 0;
+				mDRotate = r.nextInt(4)+1;
 
 				
 			} else {
@@ -290,12 +290,8 @@ public class BubbleActivity extends Activity {
 				// TODO - Set movement direction and speed
 				// Limit movement speed in the x and y
 				// direction to [-3..3].
-
-
-			
-			
-			
-			
+				mDx = r.nextFloat() * 6.0f - 3.0f;
+				mDy = r.nextFloat() * 6.0f - 3.0f;
 			
 			}
 		}
@@ -309,12 +305,13 @@ public class BubbleActivity extends Activity {
 			} else {
 			
 				//TODO - set scaled bitmap size in range [1..3] * BITMAP_SIZE
-				mScaledBitmapWidth = 0;
+				mScaledBitmapWidth = r.nextInt(4)+1 * BITMAP_SIZE;
 			
 			}
 
 			// TODO - create the scaled bitmap using size set above
-			mScaledBitmap = null;
+			// use the mBitmap variable that was created with the BitmapFactory earlier
+			mScaledBitmap = Bitmap.createScaledBitmap(mBitmap, mScaledBitmapWidth, mScaledBitmapWidth, true);
 		}
 
 		// Start moving the BubbleView & updating the display
@@ -403,22 +400,23 @@ public class BubbleActivity extends Activity {
 		protected synchronized void onDraw(Canvas canvas) {
 
 			// TODO - save the canvas
-
+			canvas.save();
 
 			// TODO - increase the rotation of the original image by mDRotate
-
+			mRotate += mDRotate;
 
 			
 			// TODO Rotate the canvas by current rotation
-
+			// need to calculate the values of the center pivot point
+			canvas.rotate((float) mRotate, mXPos + (mScaledBitmapWidth / 2), mYPos + (mScaledBitmapWidth / 2));
 			
 			
 			// TODO - draw the bitmap at it's new location
-			
+			canvas.drawBitmap(mScaledBitmap, mXPos, mYPos, mPainter);
 
 			
 			// TODO - restore the canvas
-
+			canvas.restore();
 
 			
 		}
