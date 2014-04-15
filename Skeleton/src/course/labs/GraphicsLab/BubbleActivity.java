@@ -95,8 +95,10 @@ public class BubbleActivity extends Activity {
 			
 			@Override
 			public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-				//setupGestureDetector();
-				soundPool.play(sampleId, 0.5f, 0.5f, 0, 0, 1.0f);
+				setupGestureDetector();
+				
+				// simple test of the sound
+				//soundPool.play(sampleId, 0.5f, 0.5f, 0, 0, 1.0f);
 			}
 		});
 		
@@ -153,18 +155,35 @@ public class BubbleActivity extends Activity {
 				// You can get all Views in mFrame using the
 				// ViewGroup.getChildCount() method
 
-
+				float eventX, eventY;
+				boolean addNew = true;
 				
+				eventX = event.getRawX();
+				eventY = event.getRawY();
 				
+				// iterate over all the bubbles currently being displayed
+				for (int i = 0; i < mFrame.getChildCount(); i++) {
+					BubbleView current = (BubbleView) mFrame.getChildAt(i);
+					
+					// if the tap intersects with a bubble, then we should "pop" it
+					if (current.intersects(eventX,eventY)) {
+						current.stop(true); 		// tell the BubbleView to stop
+						log("*** onSingleTapConfirmed found intersect of a bubble at " + eventX + ", " + eventY);
+						addNew = false;
+						break;
+					}
+				}
 				
+				// if it did not intersect with any, add a new bubble
+				if(addNew){
+					BubbleView temp = new BubbleView(mFrame.getContext(), eventX, eventY);
+					mFrame.addView(temp); // add it to the view so that it will draw on the screen
+					temp.start();         // start the bubble's motion
+					log("*** onSingleTapConfirmed added a new bubble at " + eventX + ", " + eventY);
+				}				
 				
-				
-				
-				
-				
-				
-				
-				return false;
+				// return true always because action has been consumed... I think?
+				return true;
 			}
 		});
 	}
@@ -174,10 +193,7 @@ public class BubbleActivity extends Activity {
 
 		// TODO - delegate the touch to the gestureDetector 
 
-		
-		
-		
-		
+		mGestureDetector.onTouchEvent(event);		
 		
 		
 		return false;
@@ -188,14 +204,7 @@ public class BubbleActivity extends Activity {
 	protected void onPause() {
 		
 		// TODO - Release all SoundPool resources
-
-
-		
-		
-		
-		
-		
-		
+		mSoundPool.release();
 		
 		super.onPause();
 	}
