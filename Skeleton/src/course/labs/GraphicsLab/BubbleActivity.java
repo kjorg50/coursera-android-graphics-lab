@@ -334,7 +334,7 @@ public class BubbleActivity extends Activity {
 					// Otherwise, request that the BubbleView be redrawn. 
 					
 
-					
+					BubbleView.this.postInvalidate();
 					
 					
 					
@@ -418,7 +418,6 @@ public class BubbleActivity extends Activity {
 			// TODO - restore the canvas
 			canvas.restore();
 
-			
 		}
 
 
